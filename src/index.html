@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self';">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SYSTEM</title><link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand"><div class="brand-mark"><img src="assets/system-logo.svg" alt="SYSTEM SCRIPT"></div><div><b>SYSTEM</b><small>CONTROL CENTER</small></div></div>
+    <div class="nav-label">WORKSPACE</div>
+    <button class="nav active" data-page="home"><span>◈</span> Visão geral</button>
+    <button class="nav" data-page="roblox"><span>▣</span> Roblox</button>
+    <button class="nav" data-page="flags"><span>⚙</span> FastFlags</button>
+    <button class="nav" data-page="modes"><span>◉</span> Modos</button>
+    <button class="nav" data-page="profiles"><span>▦</span> Perfis</button>
+    <button class="nav" data-page="system"><span>▤</span> Sistema</button>
+    <button class="nav" data-page="settings"><span>⚙</span> Personalização</button>
+    <button class="nav" data-page="about"><span>ⓘ</span> Sobre</button>
+    <div class="side-bottom"><div class="status-dot"></div><span>SYSTEM v0.4.0</span><small>LOCAL</small></div>
+  </aside>
+  <main class="main">
+    <header class="topbar"><div><span class="eyebrow">SYSTEM / <span id="crumb">OVERVIEW</span></span><h1 id="page-title">Visão geral</h1></div><div class="top-actions"><span class="pill"><i></i> Monitoramento local</span><button class="icon-btn" id="refresh" title="Atualizar">↻</button></div></header>
+    <section id="page-home" class="page active">
+      <div class="hero"><div><span class="eyebrow purple">PERFORMANCE HUB · 0.3.0</span><h2>Seu Roblox.<br><em>Seu controle.</em></h2><p>Gerencie o Roblox, organize configurações em perfis e acompanhe os recursos do computador.</p><div class="hero-actions"><button class="btn primary" id="launch-main">▶ Abrir Roblox</button><button class="btn secondary" data-goto="flags">Configurar cliente</button></div></div><div class="orb"><div class="orb-core"><img src="assets/system-logo.svg" alt="SYSTEM SCRIPT"></div></div></div>
+      <div class="section-head"><div><span class="eyebrow">MONITORAMENTO EM TEMPO REAL</span><h3>Estado do ambiente</h3></div><span class="muted" id="last-update">Atualizando...</span></div>
+      <div class="cards">
+        <article class="stat-card"><span class="stat-icon">▣</span><small>ROBLOX PLAYER</small><strong id="roblox-state">Verificando</strong><span class="muted" id="roblox-detail">Detectando instalação</span></article>
+        <article class="stat-card"><span class="stat-icon">⌁</span><small>USO DE CPU</small><strong id="cpu-percent">Calculando...</strong><div class="meter"><i id="cpu-meter"></i></div><span class="muted" id="cpu-name">Lendo processador</span></article>
+        <article class="stat-card"><span class="stat-icon">▤</span><small>USO DE RAM</small><strong id="ram-percent">--</strong><div class="meter"><i id="ram-meter"></i></div><span class="muted"><span id="ram-total">--</span> total · <span id="ram-free">--</span></span></article>
+      </div>
+      <div class="notice"><b>Transparência sobre FastFlags</b><p>O Roblox pode ignorar ou bloquear flags fora da lista de permissões vigente. O SYSTEM não promete aumento de FPS; use apenas chaves e valores que você verificou e teste alterações individualmente.</p></div>
+    </section>
+    <section id="page-roblox" class="page">
+      <div class="panel"><div class="panel-title"><div><span class="eyebrow">PLAYER CONTROL</span><h3>Gerenciamento do Roblox</h3></div><span class="tag" id="player-tag">VERIFICANDO</span></div><p class="muted">O SYSTEM detecta a instalação desktop no perfil atual do Windows.</p><div class="button-row"><button class="btn primary" id="launch">▶ Iniciar Roblox</button><button class="btn danger" id="close">■ Fechar Roblox</button><button class="btn secondary" id="open-folder">Abrir pasta</button></div><div class="detail-line"><span>Localização detectada</span><code id="roblox-path">Não encontrada</code></div></div>
+      <div class="panel"><div class="panel-title"><h3>Backups e recuperação</h3><button class="btn secondary small" id="open-backups">Abrir pasta de backups</button></div><p class="muted">O SYSTEM cria uma cópia das configurações anteriores antes de aplicar alterações.</p><div class="detail-line"><span>Backups disponíveis</span><b id="backup-count">0</b></div><div class="detail-line"><span>Mais recente</span><code id="backup-latest">Nenhum backup disponível</code></div><div class="button-row"><button class="btn secondary" id="restore-backup">Restaurar backup mais recente</button></div></div>
+    </section>
+    <section id="page-flags" class="page">
+      <div class="notice warning"><b>Antes de editar</b><p>Use somente FastFlags e valores que você verificou como permitidos. O editor valida JSON, mas não consegue confirmar se uma chave é aceita pelo Roblox.</p></div>
+      <div class="panel"><div class="panel-title"><div><span class="eyebrow">CLIENT SETTINGS</span><h3>Editor de FastFlags</h3></div><button class="btn secondary small" id="load-flags">Recarregar</button></div>
+      <div class="detail-line"><span>Arquivo ativo</span><code id="flags-path">Roblox não encontrado</code></div>
+      <div class="saga-json-editor" id="saga-json-editor-v1">
+        <div class="json-heading">
+          <div><b>Configuração completa</b><small>Cole o JSON inteiro das suas FastFlags abaixo.</small></div>
+          <span id="saga-json-count">0 flags</span>
+        </div>
+        <textarea id="saga-json-input" spellcheck="false" autocomplete="off" autocapitalize="off" placeholder='{
+  "NomeDaFlag": "Valor"
+}'></textarea>
+        <div class="json-actions">
+          <button class="btn secondary" id="saga-json-validate">Validar JSON</button>
+          <button class="btn primary" id="saga-json-apply">Aplicar configurações</button>
+        </div>
+        <div id="saga-json-status" class="json-status">Aguardando um JSON.</div>
+        <p class="editor-foot">O SYSTEM valida a estrutura do JSON e cria um backup antes de salvar. Isso não garante que o Roblox aceite todas as FastFlags.</p>
+      </div>
+      <div class="editor-toolbar" hidden><span id="flag-count">0 configurações</span><div><button id="import-flags">Importar JSON</button><button id="export-flags">Exportar JSON</button><button id="add-flag">Adicionar</button><button id="save-flags">Salvar alterações</button></div></div>
+      <input class="field search" id="flag-search" hidden>
+      <div id="flags-list" class="flags-list" hidden></div></div>
+    </section>
+    <section id="page-profiles" class="page">
+      <div class="panel"><div class="panel-title"><div><span class="eyebrow">CONFIGURATION PROFILES</span><h3>Perfis de configuração</h3></div><button class="btn secondary small" id="refresh-profiles">Atualizar</button></div>
+      <p class="muted">Salve conjuntos de configurações para alternar entre eles. Aplicar um perfil substitui as FastFlags atuais e cria backup automático.</p>
+      <div class="profile-create"><input class="field" id="profile-name" maxlength="40" placeholder="Nome do perfil (ex.: Competitivo)"><button class="btn primary" id="save-profile">Salvar perfil atual</button></div>
+      <div id="profiles-list" class="profiles-list"><div class="empty">Carregando perfis...</div></div></div>
+    </section>
+    <section id="page-system" class="page">
+      <div class="panel"><div class="panel-title"><div><span class="eyebrow">DIAGNOSTICS</span><h3>Informações do sistema</h3></div><button class="btn secondary small" id="refresh-system">Atualizar</button></div><div class="system-grid" id="system-info"></div></div>
+      <div class="panel">
+        <div class="panel-title">
+          <h3>Uso de CPU por núcleo</h3>
+          <span class="muted">Monitoramento individual</span>
+        </div>
+        <div id="cpu-cores-grid" class="core-grid">
+          <div class="empty">Aguardando medições...</div>
+        </div>
+      </div>
+      <div class="panel"><h3>Sobre o SAGA</h3><p class="muted">Versão 0.4.0 · Aplicativo local · Sem telemetria adicionada nesta atualização.</p><p class="muted">O monitoramento é informativo. O uso de CPU é uma estimativa do sistema operacional e pode variar entre atualizações.</p></div>
+    </section>
+    <section id="page-settings" class="page">
+      <div class="panel">
+        <span class="eyebrow">APP PREFERENCES</span>
+        <h3>Personalização</h3>
+        <p class="muted">Configure a aparência e o intervalo de monitoramento.</p>
+
+        <div class="settings-grid">
+          <label class="setting">
+            <span>Intervalo de atualização</span>
+            <select class="field" id="refresh-interval">
+              <option value="2000">2 segundos</option>
+              <option value="3000">3 segundos</option>
+              <option value="5000">5 segundos</option>
+              <option value="10000">10 segundos</option>
+              <option value="15000">15 segundos</option>
+              <option value="30000">30 segundos</option>
+            </select>
+          </label>
+
+          <label class="setting color-setting">
+            <span>Cor principal da interface</span>
+            <div class="color-picker-row">
+              <input class="color-picker" type="color" id="accent-color" value="#FFFFFF" aria-label="Escolher cor principal">
+              <div>
+                <b id="accent-hex">#FF1744</b>
+                <small>Escolha qualquer cor usando o seletor</small>
+              </div>
+            </div>
+          </label>
+
+          <label class="setting setting-check">
+            <input type="checkbox" id="reduce-motion">
+            <span>Reduzir animações</span>
+          </label>
+        </div>
+
+        <div class="button-row">
+          <button class="btn primary" id="save-preferences">Salvar preferências</button>
+          <button class="btn secondary" id="reset-preferences">Restaurar padrão</button>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h3>Informações</h3>
+        <p class="muted">A temperatura depende de sensores e drivers compatíveis e não é medida por esta versão.</p>
+      </div>
+    </section>
+    <!-- SYSTEM_ABOUT_PAGE_V1 -->
+    <section id="page-about" class="page">
+      <div class="panel">
+        <h3>Sobre</h3>
+        <p>Criado por Sant2ZX</p>
+        <h3>Links:</h3>
+        <div class="about-links">
+          <p>Youtube: <a href="https://www.youtube.com/@Sant2ZX" target="_blank" rel="noopener noreferrer">https://www.youtube.com/@Sant2ZX</a></p>
+          <p>Discord: <a href="https://discord.gg/eUXbN6eMbM" target="_blank" rel="noopener noreferrer">https://discord.gg/eUXbN6eMbM</a></p>
+        </div>
+      </div>
+    </section>    <footer>SYSTEM <span>•</span> Controle local, perfis e recuperação de configurações</footer>
+      <section id="page-modes" class="page">
+      <div class="mode-buttons">
+        <button class="mode-button" id="mode-normal" type="button">Normal</button>
+        <button class="mode-button" id="mode-fps" type="button">FPS</button>
+        <button class="mode-button" id="mode-sharders" type="button">Sharders</button>
+      </div>
+    </section>
+  </main>
+</div>
+<div id="toast" class="toast"></div>
+<script src="renderer.js"></script>
+</body></html>

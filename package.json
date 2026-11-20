@@ -1,0 +1,60 @@
+{
+    "version":  "0.4.0",
+    "main":  "src/main.js",
+    "private":  true,
+    "scripts":  {
+                    "start":  "electron .",
+                    "dev":  "electron .",
+                    "postinstall":  "node scripts/ensure-electron.js",
+                    "dist":  "electron-builder --win nsis --x64",
+                    "dist:dir":  "electron-builder --dir --win --x64"
+                },
+    "devDependencies":  {
+                            "electron":  "^35.0.0",
+                            "electron-builder":  "^26.18.0",
+                            "png-to-ico":  "^3.0.2",
+                            "sharp":  "^0.35.5"
+                        },
+    "allowScripts":  {
+                         "electron@35.7.5":  true
+                     },
+    "name":  "system-launcher",
+    "productName":  "SYSTEM",
+    "description":  "SYSTEM - Roblox Control Center",
+    "build":  {
+                  "appId":  "com.sant2zx.system",
+                  "productName":  "SYSTEM",
+                  "asar":  true,
+                  "directories":  {
+                                      "output":  "release"
+                                  },
+                  "files":  [
+                                "src/**/*",
+                                "package.json"
+                            ],
+                  "win":  {
+                              "target":  [
+                                             {
+                                                 "target":  "nsis",
+                                                 "arch":  [
+                                                              "x64"
+                                                          ]
+                                             }
+                                         ],
+                              "artifactName":  "SYSTEM-Setup-${version}.${ext}",
+                              "icon":  "src/assets/system.ico"
+                          },
+                  "nsis":  {
+                               "uninstallDisplayName":  "SYSTEM",
+                               "createDesktopShortcut":  true,
+                               "shortcutName":  "SYSTEM",
+                               "oneClick":  false,
+                               "createStartMenuShortcut":  true,
+                               "allowToChangeInstallationDirectory":  true,
+                               "deleteAppDataOnUninstall":  false,
+                               "installerIcon":  "src/assets/system.ico",
+                               "uninstallerIcon":  "src/assets/system.ico",
+                               "installerHeaderIcon":  "src/assets/system.ico"
+                           }
+              }
+}

@@ -1,0 +1,24 @@
+﻿node_modules/
+release/
+dist/
+
+backup-*/
+recovery-*/
+
+*.backup-*
+*.log
+
+package-backup-*.json
+package-before-installer-*.json
+package-icon-backup-*.json
+
+.env
+.env.*
+!.env.example
+
+.DS_Store
+Thumbs.db
+
+# Scripts antigos de atualização
+Atualizar-SAGA-v0.2.0.ps1
+Atualizar-SAGA-v0.3.0.ps1
