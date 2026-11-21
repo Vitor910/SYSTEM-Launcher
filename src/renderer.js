@@ -21,7 +21,7 @@ function bytes(n) {
 function page(name) {
   document.querySelectorAll(".page").forEach(x => x.classList.toggle("active", x.id === `page-${name}`));
   document.querySelectorAll(".nav").forEach(x => x.classList.toggle("active", x.dataset.page === name));
-  const labels = {home:["Visão geral","OVERVIEW"],roblox:["Roblox","PLAYER CONTROL"],flags:["FastFlags","CLIENT SETTINGS"],profiles:["Perfis","CONFIGURATION PROFILES"],system:["Sistema","DIAGNOSTICS"],settings:["Personalização","APP PREFERENCES"],about:["Sobre","ABOUT"]};
+  const labels = {home:["Vis�o geral","OVERVIEW"],roblox:["Roblox","PLAYER CONTROL"],flags:["FastFlags","CLIENT SETTINGS"],profiles:["Perfis","CONFIGURATION PROFILES"],system:["Sistema","DIAGNOSTICS"],settings:["Personaliza��o","APP PREFERENCES"],about:["Sobre","ABOUT"]};
   $("page-title").textContent = labels[name][0]; $("crumb").textContent = labels[name][1];
 }
 document.querySelectorAll(".nav").forEach(x => x.addEventListener("click", () => page(x.dataset.page)));
@@ -29,10 +29,10 @@ document.querySelectorAll("[data-goto]").forEach(x => x.addEventListener("click"
 async function refresh() {
   try {
     const [info, status] = await Promise.all([window.saga.info(), window.saga.robloxStatus()]);
-    $("roblox-state").textContent = status.installed ? (status.running ? "Em execução" : "Instalado") : "Não encontrado";
-    $("roblox-detail").textContent = status.running ? "Processo detectado" : "Instalação desktop";
-    $("player-tag").textContent = status.installed ? (status.running ? "EM EXECUÇÃO" : "INSTALADO") : "NÃO ENCONTRADO";
-    $("roblox-path").textContent = status.versionPath || "Não encontrada";
+    $("roblox-state").textContent = status.installed ? (status.running ? "Em execu��o" : "Instalado") : "N�o encontrado";
+    $("roblox-detail").textContent = status.running ? "Processo detectado" : "Instala��o desktop";
+    $("player-tag").textContent = status.installed ? (status.running ? "EM EXECU��O" : "INSTALADO") : "N�O ENCONTRADO";
+    $("roblox-path").textContent = status.versionPath || "N�o encontrada";
     $("cpu-name").textContent = info.cpu;
 
     const coreGrid = $("cpu-cores-grid");
@@ -59,7 +59,7 @@ async function refresh() {
     $("ram-percent").textContent = `${Number(info.memoryPercent || 0).toFixed(1)}%`;
     $("last-update").textContent = "Atualizado às " + new Date().toLocaleTimeString("pt-BR");
     const rows = [
-      ["Versão do SAGA", info.version],
+      ["Vers�o do SAGA", info.version],
       ["Sistema operacional", `${info.osType} ${info.release}`],
       ["Arquitetura", info.arch],
       ["Computador", info.hostname],
@@ -71,7 +71,7 @@ async function refresh() {
       ["Memória usada pelo SAGA", bytes(info.processMemory)],
       ["Electron", info.electronVersion],
       ["Node.js", info.nodeVersion],
-      ["Roblox", status.installed ? "Instalado" : "Não detectado"],
+      ["Roblox", status.installed ? "Instalado" : "N�o detectado"],
       ["Tempo ligado", `${Math.floor(info.uptime/3600)} h ${Math.floor((info.uptime%3600)/60)} min`]
     ];
     $("system-info").innerHTML = rows.map(([k,v]) => `<div class="system-item"><small>${esc(k)}</small><b>${esc(v)}</b></div>`).join("");
@@ -87,7 +87,7 @@ $("refresh").onclick = $("refresh-system").onclick = refresh;
 function renderFlags() {
   const list = $("flags-list");
   const entries = Object.entries(flags).filter(([k,v]) => (k + " " + JSON.stringify(v)).toLowerCase().includes(flagFilter));
-  $("flag-count").textContent = `${Object.keys(flags).length} configuração(ões)`;
+  $("flag-count").textContent = `${Object.keys(flags).length} configura��o(�es)`;
   if (!entries.length) { list.innerHTML = `<div class="empty">${Object.keys(flags).length ? "Nenhum resultado para a pesquisa." : "Nenhuma FastFlag configurada. Adicione uma chave que você já verificou."}</div>`; return; }
   list.innerHTML = "";
   for (const [key, value] of entries) {
@@ -113,8 +113,8 @@ async function loadFlags(show = true) {
   try {
     const result = await window.saga.readFlags();
     flags = result.flags || {};
-    $("flags-path").textContent = result.path || "Roblox não encontrado";
-    if (result.error) toast(result.error); else if (show) toast(result.installed ? "Configurações carregadas." : "Roblox não encontrado.");
+    $("flags-path").textContent = result.path || "Roblox n�o encontrado";
+    if (result.error) toast(result.error); else if (show) toast(result.installed ? "Configura��es carregadas." : "Roblox n�o encontrado.");
     renderFlags();
   } catch(e) { toast(e.message); }
 }
@@ -128,7 +128,7 @@ $("add-flag").onclick = () => {
 $("save-flags").onclick = async () => {
   try {
     const result = await window.saga.writeFlags(flags);
-    toast(`${result.count} configuração(ões) salvas. Backup automático criado.`);
+    toast(`${result.count} configura��o(�es) salvas. Backup autom�tico criado.`);
     await loadFlags(false); await loadBackups();
   } catch(e) { toast(e.message); }
 };
@@ -148,7 +148,7 @@ async function loadBackups() {
   } catch(e) { toast(e.message); }
 }
 $("restore-backup").onclick = async () => {
-  if (!confirm("Restaurar o backup mais recente? As configurações atuais serão salvas em outro backup antes da restauração.")) return;
+  if (!confirm("Restaurar o backup mais recente? As configura��es atuais ser�o salvas em outro backup antes da restaura��o.")) return;
   try { const r = await window.saga.restoreBackup(); toast(`Backup restaurado: ${r.name} (${r.count} flags).`); await loadFlags(false); await loadBackups(); }
   catch(e) { toast(e.message); }
 };
@@ -156,10 +156,10 @@ $("restore-backup").onclick = async () => {
 async function loadProfiles() {
   try {
     const profiles = await window.saga.listProfiles();
-    $("profiles-list").innerHTML = profiles.length ? profiles.map(p => `<div class="profile-row"><div><b>${esc(p.name)}</b><small>${p.count} configuração(ões) · ${p.updatedAt ? new Date(p.updatedAt).toLocaleString("pt-BR") : "Sem data"}</small></div><div class="profile-actions"><button class="btn secondary small" data-apply="${esc(p.name)}">Aplicar</button><button class="btn danger small" data-delete="${esc(p.name)}">Excluir</button></div></div>`).join("") : '<div class="empty">Nenhum perfil salvo. Crie um com as configurações atuais.</div>';
+    $("profiles-list").innerHTML = profiles.length ? profiles.map(p => `<div class="profile-row"><div><b>${esc(p.name)}</b><small>${p.count} configura��o(�es) � ${p.updatedAt ? new Date(p.updatedAt).toLocaleString("pt-BR") : "Sem data"}</small></div><div class="profile-actions"><button class="btn secondary small" data-apply="${esc(p.name)}">Aplicar</button><button class="btn danger small" data-delete="${esc(p.name)}">Excluir</button></div></div>`).join("") : '<div class="empty">Nenhum perfil salvo. Crie um com as configura��es atuais.</div>';
     $("profiles-list").querySelectorAll("[data-apply]").forEach(b => b.onclick = async () => {
       if (!confirm(`Aplicar o perfil "${b.dataset.apply}" ao Roblox?`)) return;
-      try { const r = await window.saga.applyProfile(b.dataset.apply); toast(`Perfil aplicado. ${r.count} configuração(ões).`); await loadFlags(false); await loadBackups(); }
+      try { const r = await window.saga.applyProfile(b.dataset.apply); toast(`Perfil aplicado. ${r.count} configura��o(�es).`); await loadFlags(false); await loadBackups(); }
       catch(e) { toast(e.message); }
     });
     $("profiles-list").querySelectorAll("[data-delete]").forEach(b => b.onclick = async () => {
@@ -363,7 +363,7 @@ window.addEventListener("beforeunload", () => clearInterval(refreshTimer));
 
   // NORMAL: remove as configurações personalizadas.
   document.getElementById("mode-normal").addEventListener("click", async () => {
-    if (!confirm("Restaurar as FastFlags padrão? As configurações personalizadas serão removidas do arquivo do Roblox.")) return;
+    if (!confirm("Restaurar as FastFlags padr�o? As configura��es personalizadas ser�o removidas do arquivo do Roblox.")) return;
 
     try {
       const result = await window.saga.writeFlags({});
@@ -372,11 +372,11 @@ window.addEventListener("beforeunload", () => clearInterval(refreshTimer));
       flags = {};
       editor.value = "{}";
       updateCount({});
-      setStatus("Configuração padrão restaurada.", true);
+      setStatus("Configura��o padr�o restaurada.", true);
       toast("Modo Normal aplicado. Backup criado.");
       await loadBackups();
     } catch (error) {
-      toast("Não foi possível restaurar: " + error.message);
+      toast("N�o foi poss�vel restaurar: " + error.message);
     }
   });
 
@@ -414,7 +414,7 @@ window.addEventListener("beforeunload", () => clearInterval(refreshTimer));
   const modeButtons = document.querySelector(".mode-buttons");
 
   if (!graphicsButton || !modeButtons) {
-    throw new Error("Elementos da página Modos não encontrados.");
+    throw new Error("Elementos da p�gina Modos n�o encontrados.");
   }
 
   graphicsButton.textContent = "Graphics Lab";
@@ -476,18 +476,18 @@ window.addEventListener("beforeunload", () => clearInterval(refreshTimer));
         <div class="graphics-actions">
           <button class="btn secondary" id="graphics-refresh" type="button">Atualizar métricas</button>
         </div>
-        <div class="graphics-note">FPS interno: não disponível pela API atual do SAGA. Não exibimos estimativas como se fossem medições reais.</div>
+        <div class="graphics-note">FPS interno: n�o dispon�vel pela API atual do SAGA. N�o exibimos estimativas como se fossem medi��es reais.</div>
       </article>
 
       <article class="graphics-card">
         <h3>Visual Presets</h3>
-        <p>Altere a cor de destaque da interface do SAGA. Isso não modifica os gráficos do Roblox.</p>
+        <p>Altere a cor de destaque da interface do SAGA. Isso n�o modifica os gr�ficos do Roblox.</p>
         <div class="graphics-actions">
           <button class="btn secondary" data-visual="purple" type="button">Purple</button>
           <button class="btn secondary" data-visual="cyan" type="button">Cyan</button>
           <button class="btn secondary" data-visual="red" type="button">Red</button>
         </div>
-        <div class="graphics-status" id="graphics-visual-status">Personalização local do launcher.</div>
+        <div class="graphics-status" id="graphics-visual-status">Personaliza��o local do launcher.</div>
       </article>
 
       <article class="graphics-card">
@@ -504,7 +504,7 @@ window.addEventListener("beforeunload", () => clearInterval(refreshTimer));
     </div>
 
     <div class="graphics-note">
-      O Graphics Lab não injeta código no Roblox, não instala shaders externos e não altera arquivos do jogo. As ferramentas disponíveis usam as APIs locais do SAGA.
+      O Graphics Lab n�o injeta c�digo no Roblox, n�o instala shaders externos e n�o altera arquivos do jogo. As ferramentas dispon�veis usam as APIs locais do SAGA.
     </div>
   `;
 
@@ -544,10 +544,10 @@ window.addEventListener("beforeunload", () => clearInterval(refreshTimer));
         bytes(info.memoryUsed) + " / " + bytes(info.memoryTotal) + ")";
 
       statusElement.textContent = status.running
-        ? "Roblox: em execução"
+        ? "Roblox: em execu��o"
         : status.installed
           ? "Roblox: instalado, mas fechado"
-          : "Roblox: não encontrado";
+          : "Roblox: n�o encontrado";
     } catch (error) {
       cpuElement.textContent = "Erro";
       ramElement.textContent = "Erro";
@@ -643,7 +643,7 @@ window.addEventListener("beforeunload", () => clearInterval(refreshTimer));
       const button = event.currentTarget;
       const status = document.getElementById("graphics-backup-status");
 
-      if (!confirm("Restaurar o backup mais recente? As configurações atuais serão substituídas.")) {
+      if (!confirm("Restaurar o backup mais recente? As configura��es atuais ser�o substitu�das.")) {
         return;
       }
 
@@ -682,7 +682,7 @@ window.addEventListener("beforeunload", () => clearInterval(refreshTimer));
   editor.value = JSON.stringify(flags, null, 2);
   updateCount(flags);
 
-  // A nova página precisa ser reconhecida pelo sistema de navegação.
+  // A nova p�gina precisa ser reconhecida pelo sistema de navega��o.
   const originalPage = page;
 
   page = function(name) {
@@ -797,7 +797,7 @@ window.addEventListener("beforeunload", () => clearInterval(refreshTimer));
   const footer = main?.querySelector("footer");
 
   if (!sidebar || !sideBottom || !main) {
-    console.error("SAGA: estrutura principal não encontrada.");
+    console.error("SAGA: estrutura principal n�o encontrada.");
     return;
   }
 
@@ -872,8 +872,8 @@ window.addEventListener("beforeunload", () => clearInterval(refreshTimer));
           "RAM: " + (info.memoryPercent ?? "Calculando") + "%",
           "",
           "ROBLOX",
-          "Instalado: " + (roblox.installed ? "Sim" : "Não"),
-          "Em execução: " + (roblox.running ? "Sim" : "Não"),
+          "Instalado: " + (roblox.installed ? "Sim" : "N�o"),
+          "Em execu��o: " + (roblox.running ? "Sim" : "N�o"),
           "",
           "CONFIGURAÇÕES",
           "FastFlags: " + Object.keys(config.flags || {}).length,
@@ -906,8 +906,8 @@ window.addEventListener("beforeunload", () => clearInterval(refreshTimer));
   {
     const root = document.getElementById("page-auditor");
     const box = panel(
-      "Auditoria de configuração",
-      "Verifica formato, nomes e valores. Não confirma a aceitação de uma FastFlag pelo Roblox."
+      "Auditoria de configura��o",
+      "Verifica formato, nomes e valores. N�o confirma a aceita��o de uma FastFlag pelo Roblox."
     );
 
     const result = output(box, "Clique em Executar auditoria.");
@@ -932,13 +932,13 @@ window.addEventListener("beforeunload", () => clearInterval(refreshTimer));
           }
 
           if (typeof value !== "string") {
-            warnings.push(key + ": valor não está armazenado como texto.");
+            warnings.push(key + ": valor n�o est� armazenado como texto.");
           }
 
           try {
             JSON.stringify(value);
           } catch {
-            problems.push(key + ": valor não serializável.");
+            problems.push(key + ": valor n�o serializ�vel.");
           }
         }
 
@@ -954,7 +954,7 @@ window.addEventListener("beforeunload", () => clearInterval(refreshTimer));
           "AVISOS",
           ...(warnings.length ? warnings : ["Nenhum aviso encontrado."]),
           "",
-          "Atenção: esta auditoria não consulta a allowlist oficial do Roblox."
+          "Aten��o: esta auditoria n�o consulta a allowlist oficial do Roblox."
         ].join("\n");
 
         record("Auditoria de FastFlags executada.");
@@ -970,11 +970,11 @@ window.addEventListener("beforeunload", () => clearInterval(refreshTimer));
   {
     const root = document.getElementById("page-diff");
     const box = panel(
-      "Comparação de configurações",
-      "Crie uma captura local e compare-a com a configuração atual."
+      "Compara��o de configura��es",
+      "Crie uma captura local e compare-a com a configura��o atual."
     );
 
-    const result = output(box, "Nenhuma comparação executada.");
+    const result = output(box, "Nenhuma compara��o executada.");
     result.id = "saga-diff-output";
 
     box.appendChild(button("Salvar captura atual", async () => {
@@ -989,7 +989,7 @@ window.addEventListener("beforeunload", () => clearInterval(refreshTimer));
 
         localStorage.setItem(snapshotsKey, JSON.stringify(snapshots.slice(0, 10)));
         result.textContent = "Captura salva. Total de capturas: " + Math.min(snapshots.length, 10);
-        record("Captura de configuração salva.");
+        record("Captura de configura��o salva.");
       } catch (error) {
         result.textContent = "Erro: " + error.message;
       }
@@ -1021,7 +1021,7 @@ window.addEventListener("beforeunload", () => clearInterval(refreshTimer));
         });
 
         result.textContent = [
-          "COMPARAÇÃO",
+          "COMPARA��O",
           "Captura: " + new Date(snapshots[0].date).toLocaleString("pt-BR"),
           "Adicionadas: " + added.length,
           "Removidas: " + removed.length,
@@ -1037,7 +1037,7 @@ window.addEventListener("beforeunload", () => clearInterval(refreshTimer));
           ...(changed.length ? changed : ["Nenhuma"])
         ].join("\n");
 
-        record("Comparação de configurações executada.");
+        record("Compara��o de configura��es executada.");
       } catch (error) {
         result.textContent = "Erro: " + error.message;
       }
@@ -1143,7 +1143,7 @@ window.addEventListener("beforeunload", () => clearInterval(refreshTimer));
     const root = document.getElementById("page-health");
     const box = panel(
       "Diagnóstico do Roblox",
-      "Verifica instalação, processo e arquivo de configuração."
+      "Verifica instala��o, processo e arquivo de configura��o."
     );
 
     const result = output(box, "Clique em verificar.");
@@ -1157,14 +1157,14 @@ window.addEventListener("beforeunload", () => clearInterval(refreshTimer));
         ]);
 
         result.textContent = [
-          "INSTALAÇÃO",
-          status.installed ? "Roblox encontrado." : "Roblox não encontrado.",
+          "INSTALA��O",
+          status.installed ? "Roblox encontrado." : "Roblox n�o encontrado.",
           "PROCESSO",
-          status.running ? "Roblox em execução." : "Roblox não está em execução.",
+          status.running ? "Roblox em execu��o." : "Roblox n�o est� em execu��o.",
           "CAMINHO",
-          status.versionPath || "Não disponível.",
+          status.versionPath || "N�o dispon�vel.",
           "",
-          "CONFIGURAÇÃO",
+          "CONFIGURA��O",
           config.error || "Arquivo JSON sem erro de leitura.",
           "FastFlags: " + Object.keys(config.flags || {}).length
         ].join("\n");
@@ -1198,7 +1198,7 @@ window.addEventListener("beforeunload", () => clearInterval(refreshTimer));
             ).join("\n")
           : "Nenhuma atividade registrada.";
       } catch {
-        result.textContent = "Não foi possível ler o histórico.";
+        result.textContent = "N�o foi poss�vel ler o hist�rico.";
       }
     }, "primary"));
 
@@ -1215,7 +1215,7 @@ window.addEventListener("beforeunload", () => clearInterval(refreshTimer));
   {
     const root = document.getElementById("page-inspector");
     const box = panel(
-      "Inspeção do ClientAppSettings",
+      "Inspe��o do ClientAppSettings",
       "Analisa o arquivo de FastFlags atualmente detectado pelo SAGA."
     );
 
@@ -1228,9 +1228,9 @@ window.addEventListener("beforeunload", () => clearInterval(refreshTimer));
         const flags = data.flags || {};
 
         result.textContent = [
-          "INSPEÇÃO DO ARQUIVO",
-          "Roblox instalado: " + (data.installed ? "Sim" : "Não"),
-          "Caminho: " + (data.path || "Não encontrado"),
+          "INSPE��O DO ARQUIVO",
+          "Roblox instalado: " + (data.installed ? "Sim" : "N�o"),
+          "Caminho: " + (data.path || "N�o encontrado"),
           "Erro de leitura: " + (data.error || "Nenhum"),
           "Quantidade de chaves: " + Object.keys(flags).length,
           "",
@@ -1240,7 +1240,7 @@ window.addEventListener("beforeunload", () => clearInterval(refreshTimer));
             : ["Nenhuma FastFlag encontrada."])
         ].join("\n");
 
-        record("Inspeção do arquivo de FastFlags executada.");
+        record("Inspe��o do arquivo de FastFlags executada.");
       } catch (error) {
         result.textContent = "Erro: " + error.message;
       }
@@ -1288,30 +1288,30 @@ window.addEventListener("beforeunload", () => clearInterval(refreshTimer));
     ["fr-FR", "Français"],
     ["de-DE", "Deutsch"],
     ["it-IT", "Italiano"],
-    ["ja-JP", "日本語"],
-    ["ko-KR", "한국어"],
-    ["zh-CN", "中文（简体）"],
+    ["ja-JP", "æ—¥æœ¬èªž"],
+    ["ko-KR", "í•œêµ­ì–´"],
+    ["zh-CN", "ä¸­æ–‡ï¼ˆç®€ä½“ï¼‰"],
     ["ru-RU", "Русский"],
     ["nl-NL", "Nederlands"],
-    ["hi-IN", "हिन्दी"],
-    ["ar", "العربية"],
+    ["hi-IN", "à¤¹à¤¿à¤¨à¥à¤¦à¥€"],
+    ["ar", "Ø§Ù„Ø¹Ø±Ø¨ÙŠØ©"],
     ["tr-TR", "Türkçe"]
   ];
 
   const translations = {
     "en-US": {
-      "Visão geral": "Overview",
-      "Personalização": "Personalization",
+      "Vis�o geral": "Overview",
+      "Personaliza��o": "Personalization",
       "Roblox": "Roblox",
       "FastFlags": "FastFlags",
       "Modos": "Modes",
       "Perfis": "Profiles",
       "Sistema": "System",
-      "Intervalo de atualização": "Refresh interval",
+      "Intervalo de atualiza��o": "Refresh interval",
       "Cor principal da interface": "Interface accent color",
       "Reduzir animações": "Reduce animations",
       "Salvar preferências": "Save preferences",
-      "Restaurar padrão": "Restore defaults",
+      "Restaurar padr�o": "Restore defaults",
       "Informações": "Information",
       "Atualizar": "Refresh",
       "Monitoramento local": "Local monitoring",
@@ -1324,7 +1324,7 @@ window.addEventListener("beforeunload", () => clearInterval(refreshTimer));
       "Iniciar Roblox": "Start Roblox",
       "Fechar Roblox": "Close Roblox",
       "Abrir pasta": "Open folder",
-      "Perfis de configuração": "Configuration profiles",
+      "Perfis de configura��o": "Configuration profiles",
       "Informações do sistema": "System information",
       "Uso de CPU por núcleo": "CPU usage per core",
       "Sobre o SAGA": "About SAGA",
@@ -1333,18 +1333,18 @@ window.addEventListener("beforeunload", () => clearInterval(refreshTimer));
       "OVERVIEW": "OVERVIEW"
     },
     "es-ES": {
-      "Visão geral": "Vista general",
-      "Personalização": "Personalización",
+      "Vis�o geral": "Vista general",
+      "Personaliza��o": "Personalizaci�n",
       "Roblox": "Roblox",
       "FastFlags": "FastFlags",
       "Modos": "Modos",
       "Perfis": "Perfiles",
       "Sistema": "Sistema",
-      "Intervalo de atualização": "Intervalo de actualización",
+      "Intervalo de atualiza��o": "Intervalo de actualizaci�n",
       "Cor principal da interface": "Color principal de la interfaz",
       "Reduzir animações": "Reducir animaciones",
       "Salvar preferências": "Guardar preferencias",
-      "Restaurar padrão": "Restaurar valores predeterminados",
+      "Restaurar padr�o": "Restaurar valores predeterminados",
       "Informações": "Información",
       "Atualizar": "Actualizar",
       "Monitoramento local": "Monitorización local",
@@ -1357,7 +1357,7 @@ window.addEventListener("beforeunload", () => clearInterval(refreshTimer));
       "Iniciar Roblox": "Iniciar Roblox",
       "Fechar Roblox": "Cerrar Roblox",
       "Abrir pasta": "Abrir carpeta",
-      "Perfis de configuração": "Perfiles de configuración",
+      "Perfis de configura��o": "Perfiles de configuraci�n",
       "Informações do sistema": "Información del sistema",
       "Uso de CPU por núcleo": "Uso de CPU por núcleo",
       "Sobre o SAGA": "Acerca de SAGA",
@@ -1366,16 +1366,16 @@ window.addEventListener("beforeunload", () => clearInterval(refreshTimer));
       "OVERVIEW": "RESUMEN"
     },
     "fr-FR": {
-      "Visão geral": "Vue d'ensemble",
-      "Personalização": "Personnalisation",
+      "Vis�o geral": "Vue d'ensemble",
+      "Personaliza��o": "Personnalisation",
       "Modos": "Modes",
       "Perfis": "Profils",
       "Sistema": "Système",
-      "Intervalo de atualização": "Intervalle d'actualisation",
+      "Intervalo de atualiza��o": "Intervalle d'actualisation",
       "Cor principal da interface": "Couleur principale de l'interface",
       "Reduzir animações": "Réduire les animations",
       "Salvar preferências": "Enregistrer les préférences",
-      "Restaurar padrão": "Restaurer les paramètres",
+      "Restaurar padr�o": "Restaurer les param�tres",
       "Informações": "Informations",
       "Atualizar": "Actualiser",
       "Abrir Roblox": "Ouvrir Roblox",
@@ -1385,16 +1385,16 @@ window.addEventListener("beforeunload", () => clearInterval(refreshTimer));
       "Sobre o SAGA": "À propos de SAGA"
     },
     "de-DE": {
-      "Visão geral": "Übersicht",
-      "Personalização": "Personalisierung",
+      "Vis�o geral": "�bersicht",
+      "Personaliza��o": "Personalisierung",
       "Modos": "Modi",
       "Perfis": "Profile",
       "Sistema": "System",
-      "Intervalo de atualização": "Aktualisierungsintervall",
+      "Intervalo de atualiza��o": "Aktualisierungsintervall",
       "Cor principal da interface": "Hauptfarbe der Oberfläche",
       "Reduzir animações": "Animationen reduzieren",
       "Salvar preferências": "Einstellungen speichern",
-      "Restaurar padrão": "Standards wiederherstellen",
+      "Restaurar padr�o": "Standards wiederherstellen",
       "Informações": "Informationen",
       "Atualizar": "Aktualisieren",
       "Abrir Roblox": "Roblox öffnen",
@@ -1402,16 +1402,16 @@ window.addEventListener("beforeunload", () => clearInterval(refreshTimer));
       "Sobre o SAGA": "Über SAGA"
     },
     "it-IT": {
-      "Visão geral": "Panoramica",
-      "Personalização": "Personalizzazione",
+      "Vis�o geral": "Panoramica",
+      "Personaliza��o": "Personalizzazione",
       "Modos": "Modalità",
       "Perfis": "Profili",
       "Sistema": "Sistema",
-      "Intervalo de atualização": "Intervallo di aggiornamento",
+      "Intervalo de atualiza��o": "Intervallo di aggiornamento",
       "Cor principal da interface": "Colore principale dell'interfaccia",
       "Reduzir animações": "Riduci animazioni",
       "Salvar preferências": "Salva preferenze",
-      "Restaurar padrão": "Ripristina predefiniti",
+      "Restaurar padr�o": "Ripristina predefiniti",
       "Informações": "Informazioni",
       "Atualizar": "Aggiorna",
       "Abrir Roblox": "Apri Roblox",
@@ -1427,34 +1427,34 @@ window.addEventListener("beforeunload", () => clearInterval(refreshTimer));
       "Salvar preferências": "設定を保存",
       "Restaurar padrão": "デフォルトに戻す",
       "Informações": "情報",
-      "Atualizar": "更新",
+      "Atualizar": "æ›´æ–°",
       "Abrir Roblox": "Robloxを開く"
     },
     "ko-KR": {
       "Visão geral": "개요",
       "Personalização": "개인 설정",
-      "Modos": "모드",
-      "Perfis": "프로필",
-      "Sistema": "시스템",
+      "Modos": "ëª¨ë“œ",
+      "Perfis": "í”„ë¡œí•„",
+      "Sistema": "ì‹œìŠ¤í…œ",
       "Intervalo de atualização": "새로 고침 간격",
       "Salvar preferências": "설정 저장",
       "Restaurar padrão": "기본값 복원",
       "Informações": "정보",
-      "Atualizar": "새로 고침",
-      "Abrir Roblox": "Roblox 실행"
+      "Atualizar": "ìƒˆë¡œ ê³ ì¹¨",
+      "Abrir Roblox": "Roblox ì‹¤í–‰"
     },
     "zh-CN": {
       "Visão geral": "概览",
       "Personalização": "个性化",
-      "Modos": "模式",
-      "Perfis": "配置文件",
-      "Sistema": "系统",
+      "Modos": "æ¨¡å¼",
+      "Perfis": "é…ç½®æ–‡ä»¶",
+      "Sistema": "ç³»ç»Ÿ",
       "Intervalo de atualização": "刷新间隔",
       "Salvar preferências": "保存偏好设置",
       "Restaurar padrão": "恢复默认设置",
       "Informações": "信息",
-      "Atualizar": "刷新",
-      "Abrir Roblox": "启动 Roblox"
+      "Atualizar": "åˆ·æ–°",
+      "Abrir Roblox": "å¯åŠ¨ Roblox"
     },
     "ru-RU": {
       "Visão geral": "Обзор",
@@ -1469,37 +1469,37 @@ window.addEventListener("beforeunload", () => clearInterval(refreshTimer));
       "Atualizar": "Обновить"
     },
     "nl-NL": {
-      "Visão geral": "Overzicht",
-      "Personalização": "Personalisatie",
+      "Vis�o geral": "Overzicht",
+      "Personaliza��o": "Personalisatie",
       "Modos": "Modi",
       "Perfis": "Profielen",
       "Sistema": "Systeem",
       "Salvar preferências": "Voorkeuren opslaan",
-      "Restaurar padrão": "Standaard herstellen",
+      "Restaurar padr�o": "Standaard herstellen",
       "Informações": "Informatie",
       "Atualizar": "Vernieuwen"
     },
     "hi-IN": {
       "Visão geral": "अवलोकन",
       "Personalização": "निजीकरण",
-      "Modos": "मोड",
-      "Perfis": "प्रोफ़ाइल",
-      "Sistema": "सिस्टम",
+      "Modos": "à¤®à¥‹à¤¡",
+      "Perfis": "à¤ªà¥à¤°à¥‹à¤«à¤¼à¤¾à¤‡à¤²",
+      "Sistema": "à¤¸à¤¿à¤¸à¥à¤Ÿà¤®",
       "Salvar preferências": "सेटिंग सहेजें",
       "Restaurar padrão": "डिफ़ॉल्ट पुनर्स्थापित करें",
       "Informações": "जानकारी",
-      "Atualizar": "रीफ़्रेश"
+      "Atualizar": "à¤°à¥€à¤«à¤¼à¥à¤°à¥‡à¤¶"
     },
     "ar": {
       "Visão geral": "نظرة عامة",
       "Personalização": "التخصيص",
-      "Modos": "الأوضاع",
-      "Perfis": "الملفات الشخصية",
-      "Sistema": "النظام",
+      "Modos": "Ø§Ù„Ø£ÙˆØ¶Ø§Ø¹",
+      "Perfis": "Ø§Ù„Ù…Ù„ÙØ§Øª Ø§Ù„Ø´Ø®ØµÙŠØ©",
+      "Sistema": "Ø§Ù„Ù†Ø¸Ø§Ù…",
       "Salvar preferências": "حفظ التفضيلات",
       "Restaurar padrão": "استعادة الافتراضي",
       "Informações": "معلومات",
-      "Atualizar": "تحديث"
+      "Atualizar": "ØªØ­Ø¯ÙŠØ«"
     },
     "tr-TR": {
       "Visão geral": "Genel Bakış",
@@ -1518,7 +1518,7 @@ window.addEventListener("beforeunload", () => clearInterval(refreshTimer));
   const topActions = document.querySelector(".top-actions");
 
   if (!root || !topActions) {
-    console.error("SAGA: área de personalização não encontrada.");
+    console.error("SAGA: �rea de personaliza��o n�o encontrada.");
     return;
   }
 
@@ -1526,7 +1526,7 @@ window.addEventListener("beforeunload", () => clearInterval(refreshTimer));
   languagePanel.className = "panel";
   languagePanel.innerHTML = `
     <span class="eyebrow">LANGUAGE & REGION</span>
-    <h3>Idioma e região</h3>
+    <h3>Idioma e regi�o</h3>
     <p class="muted">Escolha o idioma da interface do SAGA.</p>
     <label class="setting">
       <span>Idioma da interface</span>
@@ -1698,14 +1698,17 @@ window.addEventListener("beforeunload", () => clearInterval(refreshTimer));
     }
   };
 
-  const observer = new MutationObserver(() => {
-    translateInterface();
+  const observer = new MutationObserver((mutations) => {
+    const hasNewElements = mutations.some(mutation =>
+      mutation.type === "childList" && mutation.addedNodes.length > 0
+    );
+
+    if (hasNewElements) translateInterface();
   });
 
   observer.observe(document.body, {
     childList: true,
-    subtree: true,
-    characterData: true
+    subtree: true
   });
 
   const timer = setInterval(updateClock, 1000);
@@ -1754,3 +1757,4 @@ window.addEventListener("beforeunload", () => clearInterval(refreshTimer));
   applyPreferences(preferences);
   console.info("SAGA: idioma e relógio carregados.");
 })();
+
